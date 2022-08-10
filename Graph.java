@@ -54,4 +54,59 @@ public class Graph {
     return degree;
   }
 
+public int highestDegree(){
+  //returns the highest degree in the graph
+  int highest_degree = 0;
+  for (int i = 0; i < countNodes; i++){
+      if(degree(i)> highest_degree ){
+        highest_degree = degree(i);
+      }      
+    }
+return highest_degree;
 }
+
+
+ /* public int highestDegree(){
+  //returns the highest degree in the graph
+  int highest_degree = 0;
+  int degreeNodeI = 0;
+  for (int i = 0; i < this.adjMatrix.lenght; i++){
+      degreeNodeI = this.degree(i);
+      if(this.degree(i)> highest_degree ){
+        highest_degree = degreeNodeI; //boa pratica de prog usar o this para metodos dentro da propria classe
+      }      
+    }
+return highest_degree;
+}*/
+
+public int lowestDegree(){
+  int lowest_degree = countNodes;
+  for (int i = 0; i < countNodes; i++){
+  if(degree(i)<lowest_degree){
+        lowest_degree = degree(i);
+      }      
+    }
+return lowest_degree;
+}
+
+  public Graph complement(){
+    //returns the complement of the current graph
+    Graph g2 = new Graph(this.adjMatrix.length);
+    for (int i = 0; i < this.countNodes; i++){
+      for (int j = 0; j < this.countNodes; j++){
+        //g2.adjMatrix[i][j] = 0;
+        if (i != j && this.adjMatrix[i][j] == 0){
+          //g2.adjMatrix[i][j] = 1;
+          g2.addEdge(i, j, 1);
+        }  
+      }
+    }   
+    return g2;
+}
+
+
+  
+     
+      
+}
+

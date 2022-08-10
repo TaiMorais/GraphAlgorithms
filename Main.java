@@ -9,5 +9,9 @@ class Main {
     // g1.degree(0);
     System.out.println(g1);
     System.out.println(g1.degree(1));
+    System.out.println("maior :" + g1.highestDegree());
+    System.out.println("menor :" + g1.lowestDegree());
+    System.out.println(g1.complement().toString());
+
   }
 }
