@@ -1,4 +1,11 @@
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Stack;
+//import com.sun.beans.editors.IntegerEditor;
+
 public class Graph {
   private int countNodes;
   private int countEdges;
@@ -127,7 +134,7 @@ public class Graph {
     return true;
   }
 
-  public void addEdgeUnoriented(int u, int v, int w){
+  public void addEdgeUnoriented(int u, int v, int w) {
 
     if (u < 0 || u > this.countNodes - 1 || v < 0 || v > this.countNodes - 1 || w <= 0) {
       System.err.println("Invalid value for u, v or w!");
@@ -135,36 +142,142 @@ public class Graph {
     }
     this.adjMatrix[u][v] = w;
     this.adjMatrix[v][u] = w;
-    this.countEdges +=2;
-    
+    this.countEdges += 2;
+
   }
 
-  public ArrayList<Integer> bfs(int s){
-  //public busca_largura(Graph, int s){
-  int[] desc = new int[this.countNodes];
-   ArrayList<Integer> Q = new ArrayList<>();
+  public ArrayList<Integer> bfs(int s) {
+    // public busca_largura(Graph, int s){
+    int[] desc = new int[this.countNodes];
+    ArrayList<Integer> Q = new ArrayList<>();
     Q.add(s);
     ArrayList<Integer> R = new ArrayList<>();
     R.add(s);
     desc[s] = 1;
-    //loop principal
-    while(Q.size() >0){
+    // loop principal
+    while (Q.size() > 0) {
       int u = Q.remove(0);
-      for(int v=0; v < this.adjMatrix[u].length; v++){
-        if(this.adjMatrix[u][v] != 0){ //verifica se v é adj a u
-          if(desc[v] == 0){// significa que essa posição ainda nao foi examinada
-          Q.add(v);
-          R.add(v);
-          desc[v] = 1;
+      for (int v = 0; v < this.adjMatrix[u].length; v++) {
+        if (this.adjMatrix[u][v] != 0) { // verifica se v é adj a u
+          if (desc[v] == 0) {// significa que essa posição ainda nao foi examinada
+            Q.add(v);
+            R.add(v);
+            desc[v] = 1;
           }
         }
       }
     }
-  return R;
+    return R;
   }
 
-  public boolean connected(){
+  public boolean connected() {
     return this.bfs(0).size() == this.countNodes;
+  }
+
+  public Graph(String fileName) throws IOException {
+    File file = new File(fileName);
+    FileReader reader = new FileReader(file);
+    BufferedReader bufferedReader = new BufferedReader(reader);
+
+    // Read header
+    String[] line = bufferedReader.readLine().split(" ");
+    this.countNodes = (Integer.parseInt(line[0]));
+    int fileLines = (Integer.parseInt(line[1]));
+
+    // Create and fill adjMatrix with read edges
+    this.adjMatrix = new int[this.countNodes][this.countNodes];
+    for (int i = 0; i < fileLines; ++i) {
+      String[] edgeInfo = bufferedReader.readLine().split(" ");
+      int source = Integer.parseInt(edgeInfo[0]);
+      int sink = Integer.parseInt(edgeInfo[1]);
+      int weight = Integer.parseInt(edgeInfo[2]);
+      addEdge(source, sink, weight);
+    }
+    bufferedReader.close();
+    reader.close();
+  }
+
+  // Pushing element on the top of the stack
+  static void stack_push(Stack<Integer> stack) {
+    for (int i = 0; i < 5; i++) {
+      stack.push(i);
+    }
+  }
+
+  // Popping element from the top of the stack
+  static void stack_pop(Stack<Integer> stack) {
+    System.out.println("Pop Operation:");
+
+    for (int i = 0; i < 5; i++) {
+      Integer y = (Integer) stack.pop();
+      System.out.println(y);
+    }
+  }
+
+  public ArrayList<Integer> buscaprofundidade(int s) {
+    // public busca_largura(Graph, int s){
+    int[] desc = new int[this.countNodes];
+    /*
+     * ArrayList<Integer> Q = new ArrayList<>();
+     * Q.add(s);
+     */
+    Stack<Integer> S = new Stack<Integer>(); // Pilha S
+    ArrayList<Integer> R = new ArrayList<>();
+    R.add(s);
+    desc[s] = 1;
+    while (S.size() > 0) {
+      int u = S.lastElement(); // u recebe o ultimo elemento de S sem remover da pilha
+      boolean unstack = true;
+
+      // se existe adjacente v de u tal que desc[v]= 0
+
+      for (int v = 0; v < this.adjMatrix[u].length; v++) {
+        if (this.adjMatrix[u][v] != 0 && desc[v] == 0) {
+
+          S.push(v); // empilha v em s
+          R.add(v); // empilha v ao final de R
+          desc[v] = 1;
+          unstack = false;
+          break;
+        }
+      }
+      if (unstack) {
+        // S.pop(u);
+        S.remove(S.size() - 1);
+      }
+
+    }
+    return R;
+  }
+
+  public boolean nonOriented() {
+    for (int i = 0; i < this.adjMatrix.length; i++) {
+      // for (int j = 0; j < this.adjMatrix[i].length; j++) { aqui o j=0 faz
+      // comparações desnecessárias, que com j+1 é resolvido.
+      for (int j = i + 1; j < this.adjMatrix[i].length; j++) {
+        if (this.adjMatrix[i][j] != this.adjMatrix[j][i]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public void dfsRecAux(int u, int[] desc, ArrayList<Integer> R) {
+    desc[u] = 1;
+    R.add(u);
+    for (int v = 0; v < this.adjMatrix[u].length; v++) {
+      if (this.adjMatrix[u][v] != 0 && desc[v] == 0) {
+        dfsRecAux(v, desc, R);
+      }
+    }
+  }
+
+  public ArrayList<Integer> dfs(int u) {
+    int[] desc = new int[this.countNodes];
+    ArrayList<Integer> R = new ArrayList<>();
+    dfsRecAux(u, desc, R);
+    return R;
   }
 
 }
