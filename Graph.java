@@ -280,4 +280,35 @@ public class Graph {
     return R;
   }
 
+  public void floyd_warshall() {
+    Integer dist[][] = new Integer[countNodes][countNodes];
+    Integer pred[][] = new Integer[countNodes][countNodes];
+    for (int i = 0; i < this.countNodes - 1; i++) {
+      for (int j = 0; i < this.countNodes - 1; j++) {
+        if (i == j) {
+          dist[i][j] = 0;
+        } else if (this.adjMatrix[i][j] != 0) {
+          dist[i][j] = this.adjMatrix[i][j];
+          pred[i][j] = i;
+        } else {
+          dist[i][j] = Integer.MAX_VALUE;
+          pred[i][j] = null;
+        }
+      }
+    }
+    for (int k = 0; k < this.countNodes - 1; k++) {
+      for (int i = 0; i < this.countNodes - 1; i++) {
+        for (int j = 0; i < this.countNodes - 1; j++) {
+
+          if (dist[i][j] > dist[i][k] + dist[k][j]) {
+            dist[i][j] = dist[i][k] + dist[k][j];
+            pred[i][j] = pred[k][j];
+          }
+
+        }
+      }
+    }
+
+  }
+
 }
