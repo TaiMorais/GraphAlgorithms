@@ -1,52 +1,170 @@
 import java.io.IOException;
+import java.util.Scanner;
 
-class Main {
-  public static void main(String[] args) throws IOException {
+public class Main {
 
-    Graph g1 = new Graph(9);
-    g1.addEdgeUnoriented(7, 5, 1);
-    g1.addEdgeUnoriented(7, 1, 1);
-    g1.addEdgeUnoriented(7, 2, 1);
-    g1.addEdgeUnoriented(1, 0, 1);
-    g1.addEdgeUnoriented(1, 4, 1);
-    g1.addEdgeUnoriented(2, 3, 1);
-    g1.addEdgeUnoriented(5, 6, 1);
-    g1.addEdgeUnoriented(6, 8, 1);
-    System.out.println(g1.bfs(7));
-    // System.out.println(g1);
+    static void MENU() {
+        System.out.println("Informe a tarefa:");
+        System.out.println("\t1-Caminho Minimo");
+        System.out.println("\t2-Labirinto");
+        System.out.println("\t3-Sair");
+        System.out.println();
+    }
 
-    System.out.println(g1.connected());
+    static void TYPEMENU() {
+        System.out.println("Informe o algoritmo:");
+        System.out.println("\t1-Dijkstra");
+        System.out.println("\t2-Bellman-Ford");
+        System.out.println("\t3-Floyd-Warshall");
+        System.out.println("\t4-Bellman-Ford Aprimorado");
+        System.out.println();
+    }
 
-    Graph g2 = new Graph(9);
-    System.out.println(g2.nonOriented());
-    g2.addEdge(0, 1, 1);
-    g2.addEdge(0, 3, 1);
-    g2.addEdge(1, 0, 1);
-    g2.addEdge(2, 1, 1);
-    g2.addEdge(3, 1, 1);
+    public static void main(String args[]) throws IOException {
 
-    System.out.println(g1.dfs(5));
+        int option = 0;
 
-    // Graph g3 = new Graph("graph.txt");
-    //System.out.println(g3);
+        Scanner reader = new Scanner(System.in);
 
-    /*
-     * g1.addEdge(0, 1, 3);
-     * g1.addEdge(1, 0, 3);
-     * g1.addEdge(0, 3, 4);
-     * g1.addEdge(3, 0, 4);
-     * g1.addEdge(3, 4, 2); // aviso
-     * // g1.degree(0);
-     * /
-     * System.out.println(g1.degree(1));
-     * System.out.println("maior :" + g1.highestDegree());
-     * System.out.println("menor :" + g1.lowestDegree());
-     * System.out.println(g1.complement().toString());
-     * System.out.println("Densidade" + g1.density());
-     * Graph g2 = new Graph(3);
-     * g2.addEdge(0, 1, 1);
-     * g2.addEdge(1, 0, 1);
-     * System.out.println("Subgrafo?" + g1.subGraph(g2));
-     */
-  }
+        do {
+
+            MENU();
+
+            option = Integer.parseInt(reader.nextLine());
+
+            switch (option) {
+                case 1: {
+                    String file;
+
+                    System.out.print("Arquivo: ");
+                    file = reader.nextLine();
+
+                    int src, dest;
+
+                    System.out.print("Origem: ");
+                    src = Integer.parseInt(reader.nextLine());
+
+                    System.out.print("Destino: ");
+                    dest = Integer.parseInt(reader.nextLine());
+
+                    int type = 0;
+
+                    do {
+                        TYPEMENU();
+
+                        type = Integer.parseInt(reader.nextLine());
+
+                        switch (type) {
+                            case 1: {
+                                GraphList graph = new GraphList(file);
+
+                                System.out.println("Processando...");
+
+                                // * Inicio do relogio
+                                long clockBegin = System.currentTimeMillis();
+
+                                graph.djkstra(src, dest);
+
+                                long clockEnd = System.currentTimeMillis();
+
+                                System.out.println("Tempo: " + (clockEnd - clockBegin) / 1000F + "s");
+
+                                break;
+                            }
+
+                            case 2: {
+                                GraphList graph = new GraphList(file);
+
+                                System.out.println("Processando...");
+
+                                // * Inicio do relogio
+                                long clockBegin = System.currentTimeMillis();
+
+                                graph.bellmanFord(src, dest);
+
+                                long clockEnd = System.currentTimeMillis();
+
+                                System.out.println("Tempo: " + (clockEnd - clockBegin) / 1000F + "s");
+
+                                break;
+                            }
+
+                            case 3: {
+                                GraphMatrix graph = new GraphMatrix(file);
+
+                                System.out.println("Processando...");
+
+                                // * Inicio do relogio
+                                long clockBegin = System.currentTimeMillis();
+
+                                graph.floydWarshall(src, dest);
+
+                                long clockEnd = System.currentTimeMillis();
+
+                                System.out.println("Tempo: " + (clockEnd - clockBegin) / 1000F + "s");
+
+                                break;
+                            }
+
+                            case 4: {
+                                GraphList graph = new GraphList(file);
+
+                                System.out.println("Processando...");
+
+                                // * Inicio do relogio
+                                long clockBegin = System.currentTimeMillis();
+
+                                graph.bellmanFordImproved(src, dest);
+
+                                long clockEnd = System.currentTimeMillis();
+
+                                System.out.println("Tempo: " + (clockEnd - clockBegin) / 1000F + "s");
+
+                                break;
+                            }
+
+                            default:
+                                System.out.println("Digite uma opcao valida!");
+                                break;
+                        }
+
+                    } while (type != 1 && type != 2 && type != 3 && type != 4);
+
+                    break;
+                }
+
+                case 2: {
+                    String file;
+
+                    System.out.print("Arquivo: ");
+                    file = reader.nextLine();
+
+                    Maze maze = new Maze(file);
+
+                    System.out.println("Processando...");
+
+                    // * Inicio do relogio
+                    long clockBegin = System.currentTimeMillis();
+
+                    maze.BFS();
+
+                    long clockEnd = System.currentTimeMillis();
+
+                    System.out.println("Tempo: " + (clockEnd - clockBegin) / 1000F + "s");
+
+                    break;
+                }
+
+                case 3:
+                    break;
+
+                default:
+                    System.out.println("Digite uma opcao valida!");
+                    break;
+            }
+
+        } while (option != 3);
+
+        reader.close();
+    }
 }
