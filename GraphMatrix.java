@@ -369,4 +369,29 @@ public class GraphMatrix {
 
   }
 
+  public ArrayList<Integer> nearestNeighbor() {
+    int u = 0;
+    ArrayList<Integer> C = new ArrayList<>();
+    ArrayList<Integer> Q = new ArrayList<>();
+
+    for (int i = 1; i < this.countNodes; i++)
+      Q.add(i);
+
+    while (!Q.isEmpty()) {
+      int v = INF;
+      for (int i = 0; i < this.adjMatrix[u].length; i++) {
+        if (this.adjMatrix[u][i] < v && !C.contains(i))
+          v = i;
+      }
+
+      C.add(v);
+      Q.remove(Integer.valueOf(v));
+      u = v;
+    }
+
+    C.add(0);
+
+    return C;
+  }
+
 }
